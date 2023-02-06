@@ -1,0 +1,18 @@
+// On a localhost
+
+###
+GET http://localhost:8080/profiles?username=DSa
+
+###
+POST  http://localhost:8080/profiles?username=SOmeName
+content-type: application/json
+
+
+### On Render
+
+###
+GET https://weatherapp-79s8.onrender.com/profiles?username=DSa
+
+###
+POST  https://weatherapp-79s8.onrender.com/profiles/profiles?username=SOmeName
+content-type: application/json
