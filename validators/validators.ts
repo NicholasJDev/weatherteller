@@ -1,17 +1,16 @@
-import {check, query} from "express-validator";
+import {query} from "express-validator";
 
 
 class Validator {
     static validateId() {
-        !query('id').isEmpty().isAlphanumeric().withMessage( "Id can't be empty").trim()
-        query('id', "Id is a stringify object type.");
+        !query('id').isEmpty().isAlphanumeric().withMessage( "Id can't be empty").trim();
     }
     static validateBody () {
         query('body').isJSON({allow_primitives: true}).isEmpty()
     }
     static validateUserName () {
-        !check('userName', "Id can't be empty").isEmpty()
-        check('userName', "Id is a stringify object type.").isAlphanumeric();
+        let validation = !query('username', "Id can't be empty").isEmpty().isAlphanumeric();
+        if (validation) {}
     }
 }
 
