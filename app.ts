@@ -1,9 +1,9 @@
-import express from "express";
+import express, {NextFunction, Request, Response} from "express";
 import bodyParser from "body-parser";
 import Controllers from "./interfaces/controllers.js";
 import * as swagger from 'swagger-express-ts';
-import swaggerUiDist from 'swagger-ui-dist'
-import {readFileSync} from "fs";
+import swaggerUiDist from 'swagger-ui-express'
+import fetch from "node-fetch";
 
 
 class WeatherApplication {
@@ -22,7 +22,7 @@ class WeatherApplication {
         this.app
             .use(bodyParser.json())
             .use(express.urlencoded({extended: true}))
-            .get('/',(req: express.Request, res : express.Response) => {
+            .get('/', (req: express.Request, res: express.Response) => {
                 res.status(200).send("Thank you for come to this application.")
             })
 
@@ -30,27 +30,37 @@ class WeatherApplication {
 
     private initializeSwagger() {
         this.app.use(swagger.express({
-            definition:{
-                info:{
+            definition: {
+                info: {
                     version: "1.0",
                     description: "This is the API documentation from Web backend service based on the NodeJS Framework of JS language. This service is going to help you find out weather forecast.",
                     title: "Weather Teller Web API"
                 },
-                externalDocs:{
-                    url: process.env.HOST ? `http://${process.env.HOST}:${this.port}` : 'https://weatherapp-79s8.onrender.com'
-                }
+                schemes: [`${process.env.HOST}` ? 'HTTP' : 'HTTPS'],
+                host: process.env.HOST ? `${process.env.HOST}:${this.port}` : 'weatherapp-79s8.onrender.com',
             }
-        })
-            .use('/api-docs/swagger', express.static('server/assets/swagger'))
-            .use('/api-docs/swagger/assets', express.static('node_modules/swagger-ui-dist'))
-        )
-        let path = swaggerUiDist.absolutePath();
-        let content = readFileSync(`${path}/swagger-initializer.js`).toString().replace("https://petstore.swagger.io/v2/swagger.json",
-            process.env.HOST ? `http://${process.env.HOST}:${this.port}/api-docs/swagger.json` : 'https://weatherapp-79s8.onrender.com/api-docs/swagger.json')
+        }))
+        this.initSwaggerUI()
+    }
+
+    private async initSwaggerUI() {
+        let swaggerFileName = (process.env.HOST ? `http://${process.env.HOST}:${this.port}` : 'https://weatherapp-79s8.onrender.com') + '/api-docs/swagger.json';
+        let json
+        await fetch(swaggerFileName).then(res =>  res.json()).then( data => json = data);
+
+        this.app
+            .use('/api-docs/', swaggerUiDist.serve, swaggerUiDist.setup(json))
+            .use((err:Response, req :Request, res: Response, next: NextFunction)=> {
+                err.statusCode = err.statusCode || 500;
+                err.statusMessage = err.statusMessage || "Internal Service Error";
+                res.status(err.statusCode).json({
+                    message: err.statusMessage
+                })
+            })
     }
 
     public listen(): void {
-        this.app.listen(this.port,() => {
+        this.app.listen(this.port, () => {
                 console.log(`Application listens on port ${this.port}`)
             }
         );
@@ -62,5 +72,6 @@ class WeatherApplication {
         })
     }
 }
+
 
 export default WeatherApplication;
