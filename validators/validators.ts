@@ -1,4 +1,4 @@
-import {check, query} from "express-validator";
+import {query} from "express-validator";
 
 
 class Validator {
@@ -10,8 +10,8 @@ class Validator {
         query('body').isJSON({allow_primitives: true}).isEmpty()
     }
     static validateUserName () {
-        !check('userName', "Id can't be empty").isEmpty()
-        check('userName', "Id is a stringify object type.").isAlphanumeric();
+        let validation = !query('username', "Id can't be empty").isEmpty().isAlphanumeric();
+        if (validation) {}
     }
 }
 

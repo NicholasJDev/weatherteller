@@ -48,7 +48,11 @@ class ProfileController implements Controllers {
     })
 
     private saveUserNameCity = async (req: express.Request, res : express.Response) => {
-        Validators.validateUserName()
+        // @ts-ignore
+        if (!req.query.username || !req.query.username?.match("/^[a-z0-9]+$/i")){
+            res.status(428).json({message: "Usernamefield can't be empty"})
+            return
+        }
         this.service.saveProfileNameCity(req).then((list: Profile) => {
             res.setHeader('Content-Type', 'application/json')
 
@@ -75,7 +79,8 @@ class ProfileController implements Controllers {
         }
     })
    private getUserByName = async (req: express.Request, res: express.Response ) => {
-        if (!req.query.username){
+        //@ts-ignore
+        if (!req.query.username || !req.query.username?.match("/^[a-z0-9]+$/i")){
             res.status(428).json({message: "Usernamefield can't be empty"})
             return
         }
@@ -170,10 +175,10 @@ class ProfileController implements Controllers {
     }
 
     private setRoutes() {
-        this.router.get(`${this.path}?:username`, Validator.validateId ,this.getUserByName);
+        this.router.get(`${this.path}?:username`, this.getUserByName);
         this.router.post(`${this.path}?:username`, this.saveUserNameCity);
-        this.router.put(`${this.path}?:id`,Validator.validateId,  this.updateUserNameCity);
-        this.router.delete(`${this.path}?:id`,Validator.validateId , this.deleteUser);
+        this.router.put(`${this.path}?:id`,  this.updateUserNameCity);
+        this.router.delete(`${this.path}?:id`, this.deleteUser);
     }
 
     public getRouter(): express.Router {
