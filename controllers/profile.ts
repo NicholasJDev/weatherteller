@@ -110,7 +110,7 @@ class ProfileController implements Controllers {
     private updateUserNameCity = async (req: express.Request, res : express.Response) => {
         try {
             //@ts-ignore
-            if (!Types.ObjectId.isValid(id)){
+            if (!Types.ObjectId.isValid(req.query.id)){
                 throw Error("Id passed in must be a string of 12 bytes or a string of 24 hex characters or an integer")
             }
             Validators.validateBody()
@@ -151,6 +151,10 @@ class ProfileController implements Controllers {
         try {
             //@ts-ignore
             Validator.validateId(req.query.id)
+            //@ts-ignore
+            if (!Types.ObjectId.isValid(req.query.id)){
+                throw Error("Id passed in must be a string of 12 bytes or a string of 24 hex characters or an integer")
+            }
             // @ts-ignore
         } catch (err: Error){
             console.log(err)
