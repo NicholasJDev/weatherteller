@@ -1,5 +1,4 @@
 import {check, query} from "express-validator";
-import {Types} from "mongoose";
 
 
 class Validator {

@@ -75,6 +75,10 @@ class ProfileController implements Controllers {
         }
     })
    private getUserByName = async (req: express.Request, res: express.Response ) => {
+        if (!req.query.username){
+            res.status(428).json({message: "Usernamefield can't be empty"})
+            return
+        }
        this.service.getProfileByUserName(req).then(record => {
             res.setHeader('Content-Type', 'application/json')
             res.status(200).json(record);

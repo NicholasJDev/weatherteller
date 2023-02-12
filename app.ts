@@ -36,7 +36,7 @@ class WeatherApplication {
                     description: "This is the API documentation from Web backend service based on the NodeJS Framework of JS language. This service is going to help you find out weather forecast.",
                     title: "Weather Teller Web API"
                 },
-                schemes: [`${process.env.HOST}` ? 'HTTP' : 'HTTPS'],
+                schemes: [`${process.env.HOST}`=='localhost' ? 'HTTP' : 'HTTPS'],
                 host: process.env.HOST ? `${process.env.HOST}:${this.port}` : 'weatherapp-79s8.onrender.com',
             }
         }))
