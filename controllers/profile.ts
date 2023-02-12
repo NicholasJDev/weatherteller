@@ -49,8 +49,8 @@ class ProfileController implements Controllers {
 
     private saveUserNameCity = async (req: express.Request, res : express.Response) => {
         // @ts-ignore
-        if (!req.query.username || !req.query.username?.match("/^[a-z0-9]+$/i")){
-            res.status(428).json({message: "Usernamefield can't be empty"})
+        if (!req.query.username){
+            res.status(428).json({message: "Username field can't be empty"})
             return
         }
         this.service.saveProfileNameCity(req).then((list: Profile) => {
@@ -80,7 +80,7 @@ class ProfileController implements Controllers {
     })
    private getUserByName = async (req: express.Request, res: express.Response ) => {
         //@ts-ignore
-        if (!req.query.username || !req.query.username?.match("/^[a-z0-9]+$/i")){
+        if (!req.query.username){
             res.status(428).json({message: "Usernamefield can't be empty"})
             return
         }
