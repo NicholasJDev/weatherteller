@@ -66,7 +66,7 @@ class ProfileController implements Controllers {
    // @ts-ignore
     @ApiOperationGet({
         parameters: {
-            path: {
+            query: {
                 "username": {
                     name:"username",
                     description: "Simple name of the user",
