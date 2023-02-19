@@ -34,11 +34,11 @@ class ProfileController implements Controllers {
                     description: "Simple name of the user",
                     required: true
                 },
-              /*  "city_name": {
+                "city_name": {
                     name:"city name",
                     description: "A simple name of the target city",
                     required: true
-                },*/
+                },
             },
             body:{model:'Profile'}
         },
@@ -51,6 +51,10 @@ class ProfileController implements Controllers {
         // @ts-ignore
         if (!req.query.username){
             res.status(428).json({message: "Username field can't be empty"})
+            return
+        }
+        if (!req.query.cityname){
+            res.status(428).json({message: "Cityname field can't be empty"})
             return
         }
         this.service.saveProfileNameCity(req).then((list: Profile) => {
