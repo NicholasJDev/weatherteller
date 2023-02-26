@@ -5,6 +5,8 @@ import {Types} from "mongoose";
 import {check} from "express-validator";
 import CityService from "./CityService.js";
 import CityRepository from "../repositories/CityRepository.js";
+import coordinates from "../models/Coordinates.js";
+import {CityImpl} from "../models/City.js";
 
 class ProfileService {
     private repository: ProfileRepository;
@@ -17,10 +19,17 @@ class ProfileService {
 
     async saveProfileNameCity(req: express.Request) {
         let name = req.query.username;
-        let cityName = req.query.cityname;
-        if (typeof name == "string" && typeof cityName == "string") {
+        let cityName = req.query.city_name;
+        if (typeof name == "string") {
+            if (typeof cityName == "string") {
+                let weatherCity = await this.cityService.getWeatherByCityName(cityName)
+                    //@ts-ignore
+                    .then(cityResult => cityResult)
 
-            return this.repository.saveProfile(new Profile(name))
+                let coord = (weatherCity as unknown as CityImpl).location;
+                // @ts-ignore
+                return this.repository.saveProfile(new Profile(name, coord))
+            }
         }
     }
     async updateProfileNameCity(req: express.Request) {

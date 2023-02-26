@@ -11,10 +11,10 @@ class Profile {
 
     _location: Coordinates | undefined;
 
-    private _coordinates: Coordinates | undefined;
 
-    constructor( name: string) {
+    constructor( name: string, location? : Coordinates ) {
         this.name = name;
+        this._location = location
     }
 
     get id(): Types.ObjectId | undefined {

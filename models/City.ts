@@ -1,8 +1,9 @@
 import Coordinates from "./Coordinates.js";
 import {OpenWeather} from "./openWeather/Response.js";
+import {Types} from "mongoose";
 
 interface City {
-    id?: string
+    _id?: Types.ObjectId | undefined
     name: string
     location: Coordinates
     weather: OpenWeather[]
@@ -10,40 +11,20 @@ interface City {
 }
 
 export class CityImpl implements City {
-    private _id?: string;
+    _id?: Types.ObjectId | undefined;
+    lastUpdate: Date;
+    location: Coordinates;
+    name: string;
+    weather: OpenWeather[];
 
-    private _lastUpdate: Date;
-    private _location: Coordinates;
-    private _name: string;
-    private _weather: OpenWeather[];
-
-    constructor(location: Coordinates, name: string, weather: OpenWeather[], id?: string ) {
+    constructor(location: Coordinates, name: string, weather: OpenWeather[], id?: Types.ObjectId) {
         this._id = id;
-        this._lastUpdate = new Date();
-        this._location = location;
-        this._name = name;
-        this._weather = weather;
+        this.lastUpdate = new Date();
+        this.location = location;
+        this.name = name;
+        this.weather = weather;
     }
 
-    get id(): string | undefined {
-        return this._id;
-    }
-
-    get lastUpdate(): Date {
-        return this._lastUpdate;
-    }
-
-    get location(): Coordinates {
-        return this._location;
-    }
-
-    get name(): string {
-        return this._name;
-    }
-
-    get weather(): OpenWeather[] {
-        return this._weather;
-    }
 }
 
 export default City

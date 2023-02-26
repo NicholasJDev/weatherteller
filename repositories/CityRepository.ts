@@ -1,11 +1,11 @@
-import {Model, Schema} from "mongoose"
+import {Model, Schema, Types} from "mongoose"
 import MongoTemplate from "../templates/MongoTemplates.js";
 import Coordinates from "../models/Coordinates.js";;
 import City, {CityImpl} from "../models/City.js";
 import {OpenWeatherImpl} from "../models/openWeather/Imp/ResponseImpl.js";
 
 class CityRepository {
-    private readonly city: Model<City>;
+    private readonly city: Model<CityImpl>;
     private collectionName : string = 'Cities'
     private readonly mongoTemplate : MongoTemplate;
 
@@ -17,12 +17,16 @@ class CityRepository {
         return await this.city.findOne({"name": name})
     }
 
+    async getCityById(id: Types.ObjectId) {
+        return await this.city.findOne({"_id": id});
+    }
+
     //@ts-ignore
     async saveCity(city: City) : Promise<InsertOneResult<City>> {
         return await this.city.collection.insertOne(city);
     }
-    async updateCity(city: City) {
-        return await this.city.replaceOne({"_id" : city.id}, city);
+    async updateCity(city: CityImpl) {
+        return await this.city.replaceOne({"_id" : city._id}, city);
     }
 
     async getCityByLocation(location: Coordinates) {
@@ -35,9 +39,7 @@ export default CityRepository;
 export const citySchema =  new Schema({
     name: String,
 
-    location: Coordinates,
-
-    weather : [OpenWeatherImpl],
+    location: {},
 
     lastUpdate : Date
 

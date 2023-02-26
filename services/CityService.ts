@@ -2,6 +2,8 @@ import CityRepository from "../repositories/CityRepository.js";
 import OpenWeatherService from "./OpenWeatherService.js";
 import {CityImpl} from "../models/City.js";
 import Coordinates from "../models/Coordinates.js";
+import {response} from "express";
+import {ObjectId, Types} from "mongoose";
 
 class CityService {
 
@@ -15,13 +17,21 @@ class CityService {
     }
 
     getWeatherByCityName(cityName:string) {
-       return  this.repository.getCity(cityName).then( city => {
-         if (city) {
-             return city;
-         }
-         let weatherByCityName = this.weatherService.getCurrentWeatherByCityName(cityName);
-         return this.repository.saveCity(new CityImpl(weatherByCityName.coordinates, weatherByCityName.name, weatherByCityName.weather))
-        })
+       return  this.repository.getCity(cityName).then( async city => {
+           if (city) {
+               return city;
+           }
+           let id = await this.weatherService.getCurrentWeatherByCityName(cityName)
+               .then(async response => await this.repository.saveCity(
+                   //@ts-ignore
+                   new CityImpl(response.coordinates, response.name, response.weather, new Types.ObjectId))
+
+                   .then( res =>  res.insertedId.id
+                   ));
+           //@ts-ignore
+
+           return await this.repository.getCityById(new Types.ObjectId(id)).then(city => city.toObject())
+       })
     }
 
     getWeatherByLocation(location: Coordinates) {

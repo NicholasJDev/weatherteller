@@ -53,7 +53,7 @@ class ProfileController implements Controllers {
             res.status(428).json({message: "Username field can't be empty"})
             return
         }
-        if (!req.query.cityname){
+        if (!req.query.city_name){
             res.status(428).json({message: "Cityname field can't be empty"})
             return
         }

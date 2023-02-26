@@ -17,12 +17,12 @@ export class MainWeatherMeasurementsImpl implements MainWeatherMeasurements {
     private _temp: number;
 
 
-    constructor(feelsLike: number, groundLevel: number, humidity: number, pressure: number, seaLevel: number, tMax: number, tMin: number, temp: number) {
+    constructor(feelsLike: number, groundLevel: number, humidity: number, pressure: number, tMax: number, tMin: number, temp: number, seaLevel?: number) {
         this._feelsLike = feelsLike;
-        this._groundLevel = groundLevel;
+        this._groundLevel = groundLevel ? groundLevel : 0;
         this._humidity = humidity;
         this._pressure = pressure;
-        this._seaLevel = seaLevel;
+        this._seaLevel = seaLevel ? seaLevel : 0;
         this._tMax = tMax;
         this._tMin = tMin;
         this._temp = temp;
@@ -95,24 +95,24 @@ export class MainWeatherMeasurementsImpl implements MainWeatherMeasurements {
 }
 
 export class OpenWeatherResponseImpl implements OpenWeatherResponse {
-    private _base: string;
-    private _cod: number;
-    private _coordinates: Coordinates;
-    private _dt: number;
+    private _base: string | undefined;
+    private _cod: number | undefined;
+    private _coordinates: Coordinates | undefined;
+    private _dt: number | undefined;
 
-    private _sys: OpenWeatherSysInfo;
-    private _id: number;
-    private _main: MainWeatherMeasurements;
-    private _name: string;
-    private _rain: OpenWeatherRain;
-    private _timeZone: number;
-    private _visibility: number;
-    private _weather: OpenWeather[];
-    private _wind: OpenWeatherWind;
-    private _cloud : OpenWeatherCloud
+    private _sys: OpenWeatherSysInfo | undefined;
+    private _id: number | undefined;
+    private _main: MainWeatherMeasurements | undefined;
+    private _name: string | undefined;
+    private _rain: OpenWeatherRain | undefined;
+    private _timeZone: number | undefined;
+    private _visibility: number | undefined;
+    private _weather: OpenWeather[] | undefined;
+    private _wind: OpenWeatherWind | undefined;
+    private _cloud: OpenWeatherCloud | undefined
 
 
-    constructor(base: string, cod: number, coordinates: Coordinates, dt: number, sys: OpenWeatherSysInfo, id: number, main: MainWeatherMeasurements, name: string, rain: OpenWeatherRain, timeZone: number, visibility: number, weather: OpenWeather[], wind: OpenWeatherWind, cloud: OpenWeatherCloud) {
+    private constructor(base: string | undefined, cod: number | undefined, coordinates: Coordinates | undefined, dt: number | undefined, sys: OpenWeatherSysInfo | undefined, id: number | undefined, main: MainWeatherMeasurements | undefined, name: string | undefined, rain: OpenWeatherRain | undefined, timeZone: number | undefined, visibility: number | undefined, weather: OpenWeather[] | undefined, wind: OpenWeatherWind | undefined, cloud: OpenWeatherCloud | undefined) {
         this._base = base;
         this._cod = cod;
         this._coordinates = coordinates;
@@ -129,59 +129,157 @@ export class OpenWeatherResponseImpl implements OpenWeatherResponse {
         this._cloud = cloud;
     }
 
-    get cloud(): OpenWeatherCloud {
+    public static OpenWeatherResponseImplBuilder = class {
+
+        private base: string | undefined;
+        private cod: number | undefined;
+        private coordinates: Coordinates | undefined;
+        private dt: number | undefined;
+
+        private sys: OpenWeatherSysInfo | undefined;
+        private id: number | undefined;
+        private main: MainWeatherMeasurements | undefined;
+        private name: string | undefined;
+        private rain: OpenWeatherRain | undefined;
+        private timeZone: number | undefined;
+        private visibility: number | undefined;
+        private weather: OpenWeather[] | undefined;
+        private wind: OpenWeatherWind | undefined;
+        private cloud: OpenWeatherCloud | undefined
+
+        constructor() {
+        }
+
+        withBase(base: string) {
+            this.base = base;
+            return this;
+        }
+
+        withCod(cod: number) {
+            this.cod = cod;
+            return this;
+        }
+
+        withCoordinates(coord: Coordinates) {
+            this.coordinates = coord;
+            return this;
+        }
+
+        withDt(dt: number) {
+            this.dt = dt;
+            return this;
+        }
+
+        withSys(sys: OpenWeatherSysInfo) {
+            this.sys = sys;
+            return this;
+        }
+
+        withId(id: number) {
+            this.id = id;
+            return this;
+        }
+
+        withMain(main: MainWeatherMeasurements) {
+            this.main = main;
+            return this;
+        }
+
+        withName(name: string) {
+            this.name = name;
+            return this;
+        }
+
+        withRain(rain: OpenWeatherRain) {
+            this.rain = rain;
+            return this;
+        }
+
+        withTimeZone(timeZone: number) {
+            this.timeZone = timeZone;
+            return this;
+        }
+
+        withVisibility(visibility: number) {
+            this.visibility = visibility;
+            return this;
+        }
+
+        withWeather(weather: OpenWeather[]) {
+            this.weather = weather;
+            return this;
+        }
+        withWind(wind: OpenWeatherWind) {
+            this.wind = wind;
+            return this;
+        }
+
+        withCloud(cloud: OpenWeatherCloud) {
+            this.cloud = cloud;
+            return this;
+        }
+
+        build(){
+            return new OpenWeatherResponseImpl(this.base, this.cod,
+                this.coordinates, this.dt, this.sys, this.id,
+                this.main, this.name,this.rain, this.timeZone, this.visibility,
+                this.weather, this.wind, this.cloud)
+        }
+    }
+
+    get cloud(): OpenWeatherCloud | undefined {
         return this._cloud;
     }
 
-    get base(): string {
+    get base(): string | undefined {
         return this._base;
     }
 
-    get cod(): number {
+    get cod(): number | undefined {
         return this._cod;
     }
 
-    get coordinates(): Coordinates {
+    get coordinates(): Coordinates | undefined {
         return this._coordinates;
     }
 
-    get dt(): number {
+    get dt(): number | undefined {
         return this._dt;
     }
 
-    get sys(): OpenWeatherSysInfo {
+    get sys(): OpenWeatherSysInfo | undefined {
         return this._sys;
     }
 
-    get id(): number {
+    get id(): number | undefined {
         return this._id;
     }
 
-    get main(): MainWeatherMeasurements {
+    get main(): MainWeatherMeasurements | undefined {
         return this._main;
     }
 
-    get name(): string {
+    get name(): string | undefined {
         return this._name;
     }
 
-    get rain(): OpenWeatherRain {
+    get rain(): OpenWeatherRain | undefined {
         return this._rain;
     }
 
-    get timeZone(): number {
+    get timeZone(): number | undefined {
         return this._timeZone;
     }
 
-    get visibility(): number {
+    get visibility(): number | undefined {
         return this._visibility;
     }
 
-    get weather(): OpenWeather[] {
+    get weather(): OpenWeather[] | undefined {
         return this._weather;
     }
 
-    get wind(): OpenWeatherWind {
+    get wind(): OpenWeatherWind | undefined {
         return this._wind;
     }
 }
@@ -217,14 +315,14 @@ export class OpenWeatherImpl implements OpenWeather {
 }
 
 export class OpenWeatherRainImpl implements OpenWeatherRain {
-    private _Hourly: number;
+    private _hourly?: number | undefined;
 
-    constructor(Hourly: number) {
-        this._Hourly = Hourly;
+    constructor(hourly: number) {
+        this._hourly = hourly ? hourly : 0;
     }
 
-    get Hourly(): number {
-        return this._Hourly;
+    get hourly(): number | undefined {
+        return this._hourly;
     }
 }
 
@@ -300,3 +398,4 @@ export class OpenWeatherCloudImpl implements OpenWeatherCloud {
         return this._all;
     }
 }
+

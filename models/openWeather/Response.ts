@@ -25,7 +25,7 @@ export interface OpenWeatherWind {
 }
 
 export interface OpenWeatherRain {
-    Hourly: number
+    hourly?: number
 }
 
 export interface OpenWeatherSysInfo {
@@ -41,19 +41,18 @@ export interface OpenWeatherCloud {
 }
 
 export interface OpenWeatherResponse {
-    id: number
-    name: string
-    coordinates: Coordinates
-    weather: OpenWeather[]
-    base: string
-    main: MainWeatherMeasurements
-    visibility: number
-    wind: OpenWeatherWind
-    rain: OpenWeatherRain
-    dt: number
-    sys : OpenWeatherSysInfo
-    timeZone: number
-    cod: number
-
-    cloud : OpenWeatherCloud
+    id: number | undefined
+    name: string | undefined
+    coordinates: Coordinates | undefined
+    weather: OpenWeather[] | undefined
+    base: string | undefined
+    main: MainWeatherMeasurements | undefined
+    visibility: number | undefined
+    wind: OpenWeatherWind | undefined
+    rain: OpenWeatherRain | undefined
+    dt: number | undefined
+    sys : OpenWeatherSysInfo | undefined
+    timeZone: number | undefined
+    cod: number | undefined
+    cloud : OpenWeatherCloud | undefined
 }

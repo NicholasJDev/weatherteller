@@ -1,11 +1,13 @@
-import * as https from "https";
 import {
     MainWeatherMeasurementsImpl, OpenWeatherCloudImpl, OpenWeatherImpl, OpenWeatherRainImpl,
     OpenWeatherResponseImpl,
     OpenWeatherSysInfoImpl, OpenWeatherWindImpl
 } from "../models/openWeather/Imp/ResponseImpl.js";
-import {OpenWeatherResponse} from "../models/openWeather/Response.js";
+import {OpenWeather, OpenWeatherResponse} from "../models/openWeather/Response.js";
 import Coordinates from "../models/Coordinates.js";
+
+import get from "axios";
+import {response} from "express";
 
 
 class OpenWeatherService {
@@ -19,45 +21,69 @@ class OpenWeatherService {
 
     }
 
-    public getCurrentWeatherByCityName(cityname: string): OpenWeatherResponse {
-        let response;
-        let responseStr = ""
-        https.request(`${this.baseUrl}/data/2.5/weather?q=${cityname}&appid=${this.apiKey}`,
-            (resp) => {
-                resp.on('data', (chunk) => {
-                    responseStr += chunk;
-                })
-            });
+    public async getCurrentWeatherByCityName(cityname: string): Promise<OpenWeatherResponse> {
 
-        response = JSON.parse(responseStr)
+        let query = `${this.baseUrl}/data/2.5/weather?q=${cityname}&appid=${this.apiKey}`
 
-        return new OpenWeatherResponseImpl(response.base,
-            response.cod,
-            new Coordinates(response.coord.lon, response.coord.lat),
-            response.dt, new OpenWeatherSysInfoImpl(response.sys.country,
+
+        let req = await get(query)
+        let response = req.data
+        console.log(response.toString())
+        let builder = new OpenWeatherResponseImpl.OpenWeatherResponseImplBuilder()
+        builder.withBase(response.base)
+            .withCod(response.cod)
+            .withDt(response.dt)
+            .withId(response.id)
+            .withName(response.name)
+            .withTimeZone(response.timezone)
+            .withVisibility(response.visibility)
+
+        if (response.coord) {
+            builder.withCoordinates(new Coordinates(response.coord.lon, response.coord.lat))
+        }
+
+        if (response.sys) {
+            builder.withSys(new OpenWeatherSysInfoImpl(response.sys.country,
                 response.sys.id,
                 response.sys.sunrise,
                 response.sys.sunset,
-                response.sys.type),
-            response.id,
-            new MainWeatherMeasurementsImpl(response.main.feels_like,
+                response.sys.type))
+        }
+
+        if (response.main) {
+            builder.withMain(new MainWeatherMeasurementsImpl(response.main.feels_like,
                 response.main.grnd_level,
                 response.main.humidity,
                 response.main.pressure,
                 response.main.sea_level,
                 response.main.temp_max,
                 response.main.temp_min,
-                response.main.temp),
-            response.name,
-            new OpenWeatherRainImpl(response.rain.hourly),
-            response.time_zone,
-            response.visibility,
-            [new OpenWeatherImpl(response.weather.description,
-                response.weather.icon,
-                response.weather.id,
-                response.weather.main)],
-            new OpenWeatherWindImpl(response.wind.degree, response.wind.gust, response.wind.speed),
-            new OpenWeatherCloudImpl(response.clouds.all))
+                response.main.temp))
+        }
+
+        if (response.rain) {
+            builder.withRain(new OpenWeatherRainImpl(response.rain))
+        }
+
+        if (response.weather.length) {
+
+            let weathers: OpenWeather[] = [];
+            response.weather.forEach(
+                (w: { description: string; icon: string; id: number; main: string; }) =>
+                    weathers.push(new OpenWeatherImpl(w.description, w.icon, w.id, w.main)));
+
+            builder.withWeather(weathers)
+        }
+
+        if (response.wind) {
+            builder.withWind(new OpenWeatherWindImpl(response.wind.deg, response.wind.gust, response.wind.speed))
+        }
+
+        if (response.clouds) {
+            builder.withCloud(new OpenWeatherCloudImpl(response.clouds.all))
+        }
+
+        return builder.build()
     }
 }
 
