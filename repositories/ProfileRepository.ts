@@ -12,8 +12,8 @@ class ProfileRepository {
         this.mongoTemplate = MongoTemplate.getInstance();
         this.profile = MongoTemplate.getClient(this.mongoTemplate).model<Profile>('Profile', profileSchema, this.collectionName);
     }
-    async getProfileByUserName(name: string) {
-        return await this.profile.findOne({"name": name})
+    getProfileByUserName(name: string) {
+        return this.profile.findOne({"name": name})
     }
 //@ts-ignore
     async saveProfile(profile: Profile) : Promise<InsertOneResult<Profile>>{
