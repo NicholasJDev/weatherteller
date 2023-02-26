@@ -20,16 +20,8 @@ class Coordinates {
         return this.long;
     }
 
-    set setlong(value: number) {
-        this.long = value;
-    }
-
     get getlat(): number {
         return this.lat;
-    }
-
-    set setslat(value: number) {
-        this.lat = value;
     }
 }
 

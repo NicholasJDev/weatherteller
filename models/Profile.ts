@@ -9,10 +9,12 @@ class Profile {
     _id?: Types.ObjectId | undefined;
     name: string;
 
-    private _coordinates: Coordinates | undefined;
+    _location: Coordinates | undefined;
 
-    constructor( name: string) {
+
+    constructor( name: string, location? : Coordinates ) {
         this.name = name;
+        this._location = location
     }
 
     get id(): Types.ObjectId | undefined {
@@ -22,12 +24,12 @@ class Profile {
     set id(value: Types.ObjectId | undefined) {
         this._id = value;
     }
-    get coordinates(): Coordinates {
-        return <Coordinates>this._coordinates;
+    get location(): Coordinates {
+        return <Coordinates>this._location;
     }
 
-    set coordinates(value: Coordinates) {
-        this._coordinates = value;
+    set location(value: Coordinates) {
+        this._location = value;
     }
 
     removeIdField(){

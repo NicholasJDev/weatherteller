@@ -1,13 +1,13 @@
 import Coordinates from "../Coordinates.js";
 
-interface OpenWeather {
+export interface OpenWeather {
     id: number
     main: string
     description: string
     icon: string
 }
 
-interface MainWeatherMeasurements {
+export interface MainWeatherMeasurements {
     temp: number
     feelsLike: number
     tMin: number
@@ -18,17 +18,17 @@ interface MainWeatherMeasurements {
     groundLevel: number
 }
 
-interface OpenWeatherWind {
+export interface OpenWeatherWind {
     speed: number
     degree: number
     gust: number
 }
 
-interface OpenWeatherRain {
-    Hourly: number
+export interface OpenWeatherRain {
+    hourly?: number
 }
 
-interface OpenWeatherSysInfo {
+export interface OpenWeatherSysInfo {
     id: number
     type: number
     country: string
@@ -36,23 +36,23 @@ interface OpenWeatherSysInfo {
     sunset: number
 }
 
-interface OpenWeatherCloud {
+export interface OpenWeatherCloud {
     all: number
 }
 
-interface OpenWeatherResponse {
-    id : number
-    name : string
-    coordinates: Coordinates
-    weather: OpenWeather[]
-    base: string
-    main: MainWeatherMeasurements
-    visibility: number
-    wind: OpenWeatherWind
-    rain: OpenWeatherRain
-    dt : number
-    timeZone : number
-    cod : number
+export interface OpenWeatherResponse {
+    id: number | undefined
+    name: string | undefined
+    coordinates: Coordinates | undefined
+    weather: OpenWeather[] | undefined
+    base: string | undefined
+    main: MainWeatherMeasurements | undefined
+    visibility: number | undefined
+    wind: OpenWeatherWind | undefined
+    rain: OpenWeatherRain | undefined
+    dt: number | undefined
+    sys : OpenWeatherSysInfo | undefined
+    timeZone: number | undefined
+    cod: number | undefined
+    cloud : OpenWeatherCloud | undefined
 }
-
-export default OpenWeatherResponse;
