@@ -4,6 +4,7 @@ import Controllers from "./interfaces/controllers.js";
 import * as swagger from 'swagger-express-ts';
 import swaggerUiDist from 'swagger-ui-express'
 import fetch from "node-fetch";
+import AuthController from "./controllers/auth/Auth.js";
 
 
 class WeatherApplication {
@@ -23,7 +24,7 @@ class WeatherApplication {
             .use(bodyParser.json())
             .use(express.urlencoded({extended: true}))
             .get('/', (req: express.Request, res: express.Response) => {
-                res.status(200).send("Thank you for come to this application.")
+                res.status(401).send("You're not authorized. Please use /login to logged in");
             })
 
     }
@@ -31,6 +32,11 @@ class WeatherApplication {
     private initializeSwagger() {
         this.app.use(swagger.express({
             definition: {
+                securityDefinitions: {
+                    oauth2:{
+                        type: "oauth2",
+                    }
+                },
                 info: {
                     version: "1.0",
                     description: "This is the API documentation from Web backend service based on the NodeJS Framework of JS language. This service is going to help you find out weather forecast.",
@@ -57,6 +63,7 @@ class WeatherApplication {
                     message: err.statusMessage
                 })
             })
+
     }
 
     public listen(): void {

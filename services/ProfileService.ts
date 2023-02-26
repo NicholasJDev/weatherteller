@@ -46,11 +46,11 @@ class ProfileService {
         let profileByUserName;
         let weather;
         if (typeof name == "string") {
-             profileByUserName = this.repository.getProfileByUserName(name);
+            //@ts-ignore
+             profileByUserName = await this.repository.getProfileByUserName(name).then(profile => profile._doc);
         }
-
         // @ts-ignore
-        profileByUserName.then(profile => { this.cityService.getWeatherByLocation(profile.location)}).then(city => weather = city.weather)
+        weather = await this.cityService.getWeatherByLocation(profileByUserName._location).then(city =>  city._doc)
           return {user: profileByUserName, weather: weather};
     };
 
