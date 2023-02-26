@@ -35,7 +35,7 @@ class ProfileController implements Controllers {
                     required: true
                 },
                 "city_name": {
-                    name:"city name",
+                    name:"city_name",
                     description: "A simple name of the target city",
                     required: true
                 },
